@@ -45,11 +45,11 @@ def Get_Setup(cc, tracer, fcal):
     # find Ethane MFC
     eth_opt = fcal[fcal.Gas=='Ethane']
     if cc_eth > max(eth_opt.Max):
-        print('Ethane flow is above device operating range(s)')
-        return None
+        msg = 'Ethane flow is above device operating range(s)'
+        raise ValueError(msg)
     elif cc_eth < min(eth_opt.Min):
-        print('Ethane flow is below device operating range(s)')
-        return None
+        msg = 'Ethane flow is below device operating range(s)'
+        raise ValueError(msg)
     else:
         eth_opt = eth_opt[eth_opt.Min < cc_eth]
         eth_opt = eth_opt[eth_opt.Max > cc_eth]
@@ -67,15 +67,15 @@ def Get_Setup(cc, tracer, fcal):
         # find N2 MFC
         N2_opt = fcal[fcal.Gas=='N2']
         if cc_N2 < min(N2_opt.Min):
-            print('N2 flow is below device operating range(s)')
-            return None
+            msg = 'N2 flow is below device operating range(s)'
+            raise ValueError(msg)
         elif cc_N2 > max(N2_opt.Max):
             # try 2 devices 
             n = 2
             cc_N2 = cc_N2/2
             if cc_N2 > max(N2_opt.Max):
-                print('N2 flow is above device operating range(s) for 2 devices')
-                return None
+                msg = 'N2 flow is above device operating range(s) for 2 devices'
+                raise ValueError(msg)
         else: n = 1
             
         N2_opt = N2_opt[N2_opt.Min < cc_N2]
@@ -87,9 +87,7 @@ def Get_Setup(cc, tracer, fcal):
             N2_set = Calc_SetPt(cc_N2, A_N2, B_N2)
             gas.append('N2')
             dev.append(N2_dev)
-            setpt.append(N2_set)
-            #out['N2-#{}'.format(i+1)] = {N2_dev:N2_set}
-        
+            setpt.append(N2_set)    
         
         return gas, dev, setpt
     
