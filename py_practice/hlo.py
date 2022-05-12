@@ -8,3 +8,5 @@ def hlo():
     return msg
 
 #hlo()
+if __name__ == "__main__":
+    hlo()
